@@ -1,0 +1,20 @@
+
+# COP3530 - P3 FRIDGE - gitignore
+# Nicolas Calafiore, Stefano Candiani, Tavienne Millner
+
+#   Add any local files you do not want to include in the git repo
+#   if they do not match the below criteria already and they will
+#   be ignored
+
+# Executables
+*.out
+
+# Makefiles
+makefile
+
+# MacOS
+.DS_Store
+
+#CLion
+.idea
+cmake-build-debug
