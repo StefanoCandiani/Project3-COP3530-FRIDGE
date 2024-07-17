@@ -10,6 +10,7 @@ class IOManager{
 public:
 
     static vector<string> Split(string line, char delimiter) {
+
         vector<string> components;
         string string_builder;
 
@@ -29,6 +30,7 @@ public:
     }
 
     static vector<string> FormatData(string line){
+
         vector<string> components;
         string string_builder = "";
         bool isIngredients = false;
@@ -52,18 +54,18 @@ public:
                 continue;
             }
             if(i == '\n') continue;
-            if(i != ',') string_builder += i;
+
+            string_builder += i;
         }
 
-        // Push the remaining string_builder to components
-        if (!string_builder.empty()) {
+        if (!string_builder.empty())
             components.push_back(string_builder);
-        }
 
         return components;
     }
 
-    static vector<Recipe*> Read(string file_path){
+    static vector<Recipe*> ReadIngredients(const string& file_path){
+
         ifstream file(".//..//IOManager//" + file_path);
         vector<string> data;
 
@@ -87,8 +89,6 @@ public:
                 recipe->AddIngredient(i);
 
             recipes.push_back(recipe);
-
-
         }
         file.close();
         return recipes;

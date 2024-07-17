@@ -18,16 +18,13 @@ public:
 
 //        if(!MyParser::isValidEntry(name, id_str))     // Could be used for future parsing of recipe nodes
 //            return false;
-
 //        MyParser::CleanName(name);
 //        int id = stoi (id_str);
 
-        cout << "Inserting" << endl;
         if (SearchForIDRecursive(id, root, false)) //If Node already exists
             return false;
 
         root = InsertRecursive(name, id, root, ingredients, ingredient_num);       //Insertion
-        cout << "Inserted" << endl;
         return true;
 
     }
@@ -85,7 +82,7 @@ public:
     bool SearchID(int id) {
         if (SearchForIDRecursive(id, root))      //If found in tree
             return true;
-         else
+        else
             return false;
 
     }
