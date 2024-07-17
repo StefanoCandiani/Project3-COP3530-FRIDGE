@@ -11,7 +11,8 @@ Nicolas Calafiore, Stefano Candiani, Tavienne Millner
 ## Build Status
 
 This project is currently under development starting from around July 3th, 2024. Any major developments will be recorded below:
-* July 3th, 2024 - Project development initialized.
+* July 3rd, 2024 - Project development initialized.
+* July 16th, 2024 - Initial AVL tree implementation commit.
 
 ## Dataset
 
