@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "Recipe.h"
+#include "..\Recipe.h"
 
 #ifndef UNTITLED3_IOMANAGER_H
 #define UNTITLED3_IOMANAGER_H
@@ -64,7 +64,7 @@ public:
     }
 
     static vector<Recipe*> Read(string file_path){
-        ifstream file(".//..//" + file_path);
+        ifstream file(".//..//IOManager//" + file_path);
         vector<string> data;
 
         if (!file.is_open()) {
@@ -81,9 +81,9 @@ public:
             string id = components[1];
             vector<string> ingredients =Split(components[2], '\'');
 
-            Recipe *recipe = new Recipe(name, stoi(id), ingredients.size());
+            Recipe* recipe = new Recipe(name, stoi(id), ingredients.size());
 
-            for (auto i: ingredients)
+            for (auto& i: ingredients)
                 recipe->AddIngredient(i);
 
             recipes.push_back(recipe);

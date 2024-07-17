@@ -12,13 +12,22 @@ class TreeNode{
 
 public:
     string name;
+    vector<string> ingredients;
+    int ingredients_num;
     int id;
     TreeNode* right;
     TreeNode* left;
     int height;
     int balance;
 
-    TreeNode(string name, int id):name(name), id(id), right(nullptr), left(nullptr), height(1), balance(0){}
+    TreeNode(string name, int id, vector<string> ingredients, int ingredients_num){
+        this->name = name;
+        this->id = id;
+        this->ingredients = ingredients;
+        this->ingredients_num = ingredients_num;
+        right = nullptr;
+        left = nullptr;
+    }
 
     int NumOfChildren(){
        int sum = 0;

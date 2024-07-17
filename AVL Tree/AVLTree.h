@@ -14,18 +14,20 @@ public:
 
     AVLTree() : root(nullptr) {}                        //Constructor
 
-    bool Insert(string name, string id_str) {
+    bool Insert(string name, int id, vector<string>& ingredients, int ingredient_num) {
 
-        if(!MyParser::isValidEntry(name, id_str))           //Authentication Parsing
-            return false;
+//        if(!MyParser::isValidEntry(name, id_str))     // Could be used for future parsing of recipe nodes
+//            return false;
 
-//        MyParser::CleanName(name);                       //Removing quotation marks
-        int id = stoi (id_str);
+//        MyParser::CleanName(name);
+//        int id = stoi (id_str);
 
+        cout << "Inserting" << endl;
         if (SearchForIDRecursive(id, root, false)) //If Node already exists
             return false;
 
-        root = InsertRecursive(name, id, root);       //Insertion
+        root = InsertRecursive(name, id, root, ingredients, ingredient_num);       //Insertion
+        cout << "Inserted" << endl;
         return true;
 
     }
@@ -256,25 +258,28 @@ private:
         return wasFound || leftFound || rightFound;
     }
     bool SearchForIDRecursive(int id, TreeNode* node, bool shouldDisplay = true) {
+
         if (node == nullptr) return false;
         if (node->id == id){
-            if(shouldDisplay) cout << node->name << endl;
+            //if(shouldDisplay) cout << node->name << endl;
             return true;
         }
-
         if (node->id > id) return SearchForIDRecursive(id, node->left, shouldDisplay);
+
         if (node->id < id) return SearchForIDRecursive(id, node->right, shouldDisplay);
+
         return false;
     }
     
-    TreeNode* InsertRecursive(const std::string& name, int ID, TreeNode* node) {
-        if (node == nullptr)                //New root created
-            return new TreeNode(name, ID);
+    TreeNode* InsertRecursive(string& name, int ID, TreeNode* node, vector<string>& ingredients, int ingredient_num) {
+        if (node == nullptr) {         //New root created
+            return new TreeNode(name, ID, ingredients, ingredient_num);
+        }
 
         if (ID < node->id)
-            node->left = InsertRecursive(name, ID, node->left);
+            node->left = InsertRecursive(name, ID, node->left, ingredients, ingredient_num);
          else
-            node->right = InsertRecursive(name, ID, node->right);
+            node->right = InsertRecursive(name, ID, node->right, ingredients, ingredient_num);
 
         UpdateHeightAndBalance(node);
         return Rebalance(node);
