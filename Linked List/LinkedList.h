@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <iostream>
 
 class LinkedList {
 public:
@@ -16,12 +17,12 @@ public:
         std::string recipeName;
         int recipeID;
         std::vector<std::string> ingredients;
-        int ingredientNum;
+        int numIngredients;
 
         LLNode* next = nullptr;
 
         // Parametrized constructor
-        LLNode(std::string& recipeName, int recipeID, std::vector<std::string>& ingredients, int ingredientNum, LLNode* next) : recipeName(recipeName), recipeID(recipeID), ingredients(ingredients), ingredientNum(ingredientNum), next(next) {}
+        LLNode(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients, LLNode* next) : recipeName(recipeName), recipeID(recipeID), ingredients(ingredients), numIngredients(numIngredients), next(next) {}
     };
 
     LinkedList() {
@@ -37,8 +38,9 @@ public:
         }
     }
 
-    void insert(std::string& recipeName, int recipeID, std::vector<std::string>& ingredients, int ingredientNum);
-    LinkedList::LLNode* search(std::vector<std::string>& userIngredients);
+    void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
+    LinkedList::LLNode* search(const std::vector<std::string>& userIngredients);
+    void traverse();
 
 private:
     // Head pointer, not accessible to client
