@@ -5,9 +5,10 @@
 using namespace std;
 /*
  * TO DO:
- *  Sort by Ingredient Number
  *  Pointer Cleanup
- *  Implement Similar Ingredient Amount Scenario
+ *  Authentication
+ *
+ *  Max Insertion Time (25,000 recipes): 15.5646
  */
 
 int main() {
@@ -17,15 +18,19 @@ int main() {
     cout << "AVL Tree Start" << endl;
     auto pastTime = std::chrono::system_clock::now();
 
-    for(auto& i : recipes)
-        if(i->recipe_id < 10000)    //Acts as slot range in map.
+    vector<Recipe*> toInsert;
+
+    for(int i = 0; i < 25000; i++)
+        toInsert.push_back(recipes[i]);
+
+    for(auto& i : toInsert)
             avlTree.Insert(i->name, i->recipe_id, i->ingredients, i->ingredient_num);
 
 
     auto now = std::chrono::system_clock::now();
-    std::chrono::duration<double> elaspedTime = now-pastTime;
+    chrono::duration<double> elaspedTime = now-pastTime;
     cout << "AVL Tree Fin" << endl;
-    std::cout << "AVL Tree Insertion Time: " << elaspedTime.count() << std::endl;
+    cout << "AVL Tree Insertion Time: " << elaspedTime.count() << std::endl;
 
     return 0;
 }

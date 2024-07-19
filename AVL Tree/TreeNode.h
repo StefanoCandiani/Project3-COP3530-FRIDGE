@@ -6,91 +6,47 @@
 #define AVLPROJECT_TREENODE_H
 
 #include <string>
+#include <vector>
 
-using namespace std;
 class TreeNode{
 
 public:
-    string name;
-    vector<string> ingredients;
-    int ingredients_num;
+    std::string name;
+    std::vector<std::string> ingredients;
+    int num_ingredients;
     int id;
     TreeNode* right;
     TreeNode* left;
     int height;
     int balance;
 
-    TreeNode(string name, int id, vector<string> ingredients, int ingredients_num){
+    TreeNode(std::string name, int id, std::vector<std::string> ingredients, int ingredientsNum){
         this->name = name;
         this->id = id;
         this->ingredients = ingredients;
-        this->ingredients_num = ingredients_num;
+        this->num_ingredients = ingredientsNum;
         right = nullptr;
         left = nullptr;
     }
 
-    int NumOfChildren(){
-       int sum = 0;
-       if(right != nullptr) sum++;
-       if(left != nullptr) sum++;
-       return sum;
-    }
+    int NumOfChildren();
 
+    bool IsImbalancedRight();
+    bool IsImbalancedLeft();
+    void UpdateBalance();
 
-    bool IsImbalancedRight(){
-        return balance < -1;
-    }
-    bool IsImbalancedLeft(){
-        return balance > 1;
-    }
-    void UpdateBalance(){
-        this->balance = GetBalanceRecursive(this);
-    }
+    bool IsLeftHeavy();
+    bool IsRightHeavy();
 
+    void UpdateHeight();
+    void PrintDetails();
 
-    bool IsLeftHeavy(){
-        return balance > 0;
-    }
-    bool IsRightHeavy(){
-        return balance < 0;
-    }
-
-
-    void UpdateHeight(){
-        this->height = GetHeightRecursive(this);
-    }
-
-    void PrintDetails(){
-        cout << "Name: " << name << endl;
-        cout << "ID: " << id << endl;
-        cout << "Height: " << height << endl;
-        cout << "Balance: " << balance << endl << endl;
-    }
-
-    TreeNode* GetInOrderSuccessor(){
-        return GetInOrderSuccessorRecursive(this->right);
-    }
-
+    TreeNode* GetInOrderSuccessor();
 
 private:
-    TreeNode* GetInOrderSuccessorRecursive(TreeNode* node){
-        if(node->left == nullptr){
-            return node;
-        }
-        else return GetInOrderSuccessorRecursive(node->left);
-    }
-    int GetBalanceRecursive (TreeNode* node){
-        if(node == nullptr) return 0;
-        int right = 1 + GetHeightRecursive(node->right);
-        int left = 1 + GetHeightRecursive(node->left);
-        return left - right;
-    }
-    int GetHeightRecursive(TreeNode* node){
-        if(node == nullptr) return 0;
-        int right = 1 + GetHeightRecursive(node->right);
-        int left = 1 + GetHeightRecursive(node->left);
-        return max(right, left);
-    }
+    TreeNode* GetInOrderSuccessorRecursive(TreeNode* node);
+    int GetBalanceRecursive (TreeNode* node);
+    int GetHeightRecursive(TreeNode* node);
 
 };
 #endif //AVLPROJECT_TREENODE_H

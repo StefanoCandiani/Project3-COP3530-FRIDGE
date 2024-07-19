@@ -22,9 +22,6 @@ public:
         this->ingredient_num = unknown_number;
     }
 
-    void AddIngredient(string ingredient){
-        ingredients.push_back(ingredient);
-    }
-
+    void AddIngredient(string ingredient);
 };
 #endif //UNTITLED3_RECIPE_H
