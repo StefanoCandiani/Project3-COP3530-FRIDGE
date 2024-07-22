@@ -141,5 +141,3 @@ int main() {
 
     return 0;
 }
-
-// Potato, Lettuce, Tomato, Onions, Celery
