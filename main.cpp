@@ -36,7 +36,7 @@ vector<string> parseIngredients(string unparsedIngredients) {
 
     vector<string> parsedIngredients;
     string ingredient;
-    while(unparsedIngredients.size() > 0) {
+    while(!unparsedIngredients.empty()) {
         ingredient = unparsedIngredients.substr(0, unparsedIngredients.find(","));
         transform(ingredient.begin(), ingredient.end(), ingredient.begin(), ::tolower);
         parsedIngredients.push_back(ingredient);
@@ -78,7 +78,7 @@ int main() {
     while(userInput != "4") {
 
         printMainMenu();
-        cin >> userInput;
+        getline(cin, userInput);
 
         // Conditionals
         if(userInput == "1") {                          // If usrInput = 1 -> Perform search operation on currently active DSA
@@ -92,7 +92,7 @@ int main() {
             cout << "|                                                          |                                                 |" << endl;
             cout << "+----------------------------------------------------------+-------------------------------------------------+" << endl;
             cout << "Would you like another recipe suggested? (y/n)" << endl;
-            cin >> userInput;
+            getline(cin, userInput);
 
             if(userInput == "n") { break; }
             else if(userInput == "y") { cout << endl; continue; }
@@ -100,26 +100,29 @@ int main() {
 
         } else if(userInput == "2") {                   // If usrInput = 2 -> Perform ingredient change operation
 
-//            changeIngredients:
+            changeIngredients:                          // Label - used to return to a point in the code without loops
+            cout << endl;
             cout << "Please enter a minimum of 5 ingredients (separated by commas): " << endl;
-            /// Work in progress [FIXME]
             getline(cin, unparsedIngredients);
             parsedIngredients = parseIngredients(unparsedIngredients);
-//
-//            cout << "Do you confirm these are the ingredients you want? (y/n)" << endl;
-//            cin >> userInput;
-//            if(userInput == "y") { continue; }
-//            else if(userInput == "n") { goto changeIngredients; }
+
+            if(parsedIngredients.size() < 5) { goto changeIngredients; }
+
+            cout << endl;
+            cout << "Do you confirm these are the ingredients you want? (y/n)" << endl;
+            getline(cin, userInput);
+            if(userInput == "y") { continue; }
+            else if(userInput == "n") { goto changeIngredients; }
 
         } else if(userInput == "3") {                   // If usrInput = 3 -> Alternate between implementation
 
             cout << endl;
             if(implementation) {
-                cout << "🔴 Deactivating AVL Tree implementation" << endl;
-                cout << "🟢 Activating Linked List implementation" << endl;
+                cout << "🔴 AVL Tree implementation" << endl;
+                cout << "🟢 Linked List implementation" << endl;
             } else {
-                cout << "🔴 Deactivating Linked List implementation" << endl;
-                cout << "🟢 Activating AVL Tree implementation" << endl;
+                cout << "🟢 AVL Tree implementation" << endl;
+                cout << "🔴 Linked List implementation" << endl;
             }
             cout << endl;
 
