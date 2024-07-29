@@ -8,6 +8,7 @@
 
 # Executables
 *.out
+*.txt
 
 # Makefiles
 makefile
