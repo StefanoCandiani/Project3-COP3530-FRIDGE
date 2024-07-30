@@ -1,42 +1,61 @@
-#ifndef AVLPROJECT_AVLTREE_H
-#define AVLPROJECT_AVLTREE_H
+//
+// Created by Tavienne Millner on 7/20/24.
+//
 
-#include "TreeNode.h"
-#include "MyParser.h"
+#ifndef INPUT_TESTING_AVLTREE_H
+#define INPUT_TESTING_AVLTREE_H
+
 #include <string>
-#include <iostream>
 #include <vector>
-
 
 class AVLTree {
 public:
-    TreeNode* root;
+    struct TreeNode {
+        // Data
+        std::string recipeName;
+        int recipeID;
+        std::vector<std::string> ingredients;
+        int numIngredients;
+        int height;
 
-    AVLTree() : root(nullptr) {}                        //Constructor
+        TreeNode* left = nullptr;
+        TreeNode* right = nullptr;
 
-    bool Insert(string name, int id, vector<string>& ingredients, int ingredientNum);
+        // Parametrized constructor
+        TreeNode(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients) : recipeName(recipeName), recipeID(recipeID), ingredients(ingredients), numIngredients(numIngredients) {}
+    };
 
-    bool Search(string target);
-    bool SearchID(int id) ;
-    bool SearchName(const std::string& name) ;
+    AVLTree() {
+        size = 0;
+        root = nullptr;
+    }
 
+    ~AVLTree() {
+        root = deleteTree(root);
+    }
+
+    void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
+    AVLTree::TreeNode* search(std::vector<std::string>& userIngredients);
+    int getSize();
 
 private:
+    TreeNode* root;
+    int size;
 
-    void PrintNames(vector<string>& names);
-    void InOrderNames(TreeNode* node, vector<string>& names);
+    AVLTree::TreeNode* helperInsert(AVLTree::TreeNode* helpRoot, const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
+    AVLTree::TreeNode* helperSearch(AVLTree::TreeNode* helpRoot, std::vector<std::string>& userIngredients);
 
-    bool SearchForNameRecursive(const std::string& name, TreeNode* node, bool shouldDisplay = true);
-    bool SearchForIDRecursive(int id, TreeNode* node, bool shouldDisplay = true);
-    
-    TreeNode* InsertRecursive(string& name, int ID, TreeNode* node, vector<string>& ingredients, int ingredientNum);
-    
-    TreeNode* Rebalance(TreeNode* node);
-    TreeNode* RotateLeft(TreeNode* node);
-    TreeNode* RotateRight(TreeNode* node);
-    
-    void UpdateHeightAndBalance(TreeNode* node);
+    // Utilities needed by insert
+    AVLTree::TreeNode* rotateLeft(AVLTree::TreeNode* node);
+    AVLTree::TreeNode* rotateRight(AVLTree::TreeNode* node);
+    AVLTree::TreeNode* rotateLeftRight(AVLTree::TreeNode* node);
+    AVLTree::TreeNode* rotateRightLeft(AVLTree::TreeNode* node);
+    int balance(TreeNode* helpRoot);
+
+    // Needed to delete tree
+    AVLTree::TreeNode* deleteTree(AVLTree::TreeNode* helpRoot);
 
 };
 
-#endif //AVLPROJECT_AVLTREE_H
+
+#endif //INPUT_TESTING_AVLTREE_H

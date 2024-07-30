@@ -31,11 +31,11 @@ int HashMap::hashFunction(int numIngredients) {
 }
 
 /// Insert Function
-void HashMap::insert(const string &recipeName, int recipeID, vector<string> &ingredients,
+void HashMap::insert(const std::string &recipeName, int recipeID, std::vector<std::string> &ingredients,
                      int numIngredients) {
     int hashCode = hashFunction(numIngredients);
     LLHashMap[hashCode] -> insert(recipeName, recipeID, ingredients, numIngredients);
-    AVLHashMap[hashCode] -> Insert(recipeName, recipeID, ingredients, numIngredients);
+    AVLHashMap[hashCode] -> insert(recipeName, recipeID, ingredients, numIngredients);
 }
 
 /// Change implementation

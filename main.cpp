@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
+#include <chrono> // used for comparing time for search
 using namespace std;
 
 /// Welcome message (Printed 1 time)

@@ -1,159 +1,133 @@
-#include "TreeNode.h"
-#include "MyParser.h"
-#include <string>
-#include <iostream>
-#include <vector>
 #include "AVLTree.h"
-TreeNode* root;
 
-bool AVLTree::Insert(string name, int id, vector<string>& ingredients, int ingredientNum) {
-
-//        if(!MyParser::isValidEntry(name, id_str))     // Could be used for future parsing of recipe nodes
-//            return false;
-//        MyParser::CleanName(name);
-//        int id = stoi (id_str);
-
-    if (SearchForIDRecursive(id, root, false)) //If Node already exists
-        return false;
-
-    root = InsertRecursive(name, id, root, ingredients, ingredientNum);       //Insertion
-    return true;
-
+void AVLTree::insert(const std::string& recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
+    this->root = helperInsert(this->root, recipeName, recipeID, ingredients, numIngredients);
+    size++;
 }
 
-bool AVLTree::Search(string target){
-    if(MyParser::isNumber(target))          //Authentification to avoid crash
-        return SearchID(stoi(target));
-
-    else {
-        MyParser::CleanName(target);            //Removes quotations
-        return SearchName(target);
-    }
-
-}
-bool AVLTree::SearchID(int id) {
-    if (SearchForIDRecursive(id, root))      //If found in tree
-        return true;
-    else
-        return false;
-
-}
-bool AVLTree::SearchName(const std::string& name) {
-    if (SearchForNameRecursive(name, root))        //If found in tree
-        return true;
-    else
-        return false;
+AVLTree::TreeNode* AVLTree::search(std::vector<std::string>& userIngredients) {
+    AVLTree::TreeNode* found = helperSearch(root, userIngredients);
+    return found;
 }
 
+AVLTree::TreeNode* AVLTree::helperInsert(AVLTree::TreeNode* helpRoot, const std::string &recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients) {
+    // Standard BST insert logic
+    if (helpRoot == nullptr)
+        return new AVLTree::TreeNode(recipeName, recipeID, ingredients, numIngredients);
+    else if (ingredients < helpRoot->ingredients)
+        helpRoot->left = helperInsert(helpRoot->left, recipeName, recipeID, ingredients, numIngredients);
+    else if (ingredients > helpRoot->ingredients)
+        helpRoot->right = helperInsert(helpRoot->right, recipeName, recipeID, ingredients, numIngredients);
 
+    // Update height and get the balance factor
+    helpRoot->height = 1 + std::max(helpRoot->left != nullptr ? helpRoot->left->height : 0, helpRoot->right != nullptr ? helpRoot->right->height : 0);
+    int balanceFactor = balance(helpRoot);
 
-
-void AVLTree::PrintNames(vector<string>& names){
-    for(int i = 0; i < names.size(); i++){
-        if(i == names.size() - 1) cout << names[i] << endl; //If last element (no comma)
-
-        else cout << names[i] << ", ";
-    }
-}
-void AVLTree::InOrderNames(TreeNode* node, vector<string>& names) {
-    if (node == nullptr) return;
-
-    InOrderNames(node->left, names);
-    names.push_back(node->name);
-    InOrderNames(node->right, names);
-}
-
-bool AVLTree::SearchForNameRecursive(const std::string& name, TreeNode* node, bool shouldDisplay) {
-    if (node == nullptr) return false;
-
-    bool wasFound = false;      //Used to avoid returning on first match. Prints all names
-
-    if (node->name == name) {
-        if (shouldDisplay) std::cout << node->id << std::endl;
-        wasFound = true;
-    }
-
-    bool leftFound = SearchForNameRecursive(name, node->left, shouldDisplay);
-    bool rightFound = SearchForNameRecursive(name, node->right, shouldDisplay);
-
-    return wasFound || leftFound || rightFound;
-}
-bool AVLTree::SearchForIDRecursive(int id, TreeNode* node, bool shouldDisplay) {
-
-    if (node == nullptr) return false;
-    if (node->id == id){
-        //if(shouldDisplay) cout << node->name << endl;
-        return true;
-    }
-    if (node->id > id) return SearchForIDRecursive(id, node->left, shouldDisplay);
-
-    if (node->id < id) return SearchForIDRecursive(id, node->right, shouldDisplay);
-
-    return false;
-}
-
-TreeNode* AVLTree::InsertRecursive(string& name, int ID, TreeNode* node, vector<string>& ingredients, int ingredientNum) {
-    if (node == nullptr) {         //New root created
-        return new TreeNode(name, ID, ingredients, ingredientNum);
-    }
-
-    if (ID < node->id)
-        node->left = InsertRecursive(name, ID, node->left, ingredients, ingredientNum);
-    else
-        node->right = InsertRecursive(name, ID, node->right, ingredients, ingredientNum);
-
-    UpdateHeightAndBalance(node);
-    return Rebalance(node);
-}
-
-TreeNode* AVLTree::Rebalance(TreeNode* node) {
-    if (node->IsImbalancedRight()) {
-        if (node->right->IsLeftHeavy()) {
-
-            node->right = RotateRight(node->right);
-            return RotateLeft(node);
-
+    // Logic for when to perform rotations taken from Slides (4 - Balanced Trees PDF page 28)
+    if (balanceFactor < -1) {
+        int balanceRight = balance(helpRoot->right);
+        if (balanceRight >= 1) {
+            helpRoot = rotateRightLeft(helpRoot);
+            helpRoot->height = 1 + std::max(helpRoot->left != nullptr ? helpRoot->left->height : 0, helpRoot->right != nullptr ? helpRoot->right->height : 0);
         }
-        else
-            return RotateLeft(node);
-
-    }
-    if (node->IsImbalancedLeft()) {
-        if (node->left->IsRightHeavy()) {
-
-            node->left = RotateLeft(node->left);
-            return RotateRight(node);
-
+        else {
+            helpRoot = rotateLeft(helpRoot);
+            helpRoot->height = 1 + std::max(helpRoot->left != nullptr ? helpRoot->left->height : 0, helpRoot->right != nullptr ? helpRoot->right->height : 0);
         }
-        else
-            return RotateRight(node);
-
     }
+    else if (balanceFactor > 1) {
+        int balanceLeft = balance(helpRoot->left);
+        if (balanceLeft <= -1) {
+            helpRoot = rotateLeftRight(helpRoot);
+            helpRoot->height = 1 + std::max(helpRoot->left != nullptr ? helpRoot->left->height : 0, helpRoot->right != nullptr ? helpRoot->right->height : 0);
+        }
+        else {
+            helpRoot = rotateRight(helpRoot);
+            helpRoot->height = 1 + std::max(helpRoot->left != nullptr ? helpRoot->left->height : 0, helpRoot->right != nullptr ? helpRoot->right->height : 0);
+        }
+    }
+
+    return helpRoot;
+}
+
+AVLTree::TreeNode* AVLTree::helperSearch(AVLTree::TreeNode* helpRoot, std::vector<std::string>& userIngredients) {
+    if (helpRoot == nullptr)
+        return helpRoot;
+    if (helpRoot->ingredients == userIngredients)
+        return helpRoot;
+    else if (userIngredients < helpRoot->ingredients)
+        return helperSearch(helpRoot->left, userIngredients);
+    else if (userIngredients > helpRoot->ingredients)
+        return helperSearch(helpRoot->right, userIngredients);
+}
+
+// Taken from Stepik 5.1 Step 1
+AVLTree::TreeNode* AVLTree::rotateLeft(AVLTree::TreeNode* node) {
+    AVLTree::TreeNode* newParent = node->right;
+    node->right = newParent->left;
+    newParent->left = node;
+
+    // Update heights
+    newParent->height = 1 + std::max(newParent->left != nullptr ? newParent->left->height : 0, newParent->right != nullptr ? newParent->right->height : 0);
+    node->height = 1 + std::max(node->left != nullptr ? node->left->height : 0, node->right != nullptr ? node->right->height : 0);
+
+    return newParent;
+}
+
+// Taken from Stepik 5.1 Step 1
+AVLTree::TreeNode* AVLTree::rotateRight(AVLTree::TreeNode* node) {
+    AVLTree::TreeNode* newParent = node->left;
+    node->left = newParent->right;
+    newParent->right = node;
+
+    // Update heights
+    newParent->height = 1 + std::max(newParent->left != nullptr ? newParent->left->height : 0, newParent->right != nullptr ? newParent->right->height : 0);
+    node->height = 1 + std::max(node->left != nullptr ? node->left->height : 0, node->right != nullptr ? node->right->height : 0);
+
+    return newParent;
+}
+
+// Taken from Stepik 5.1 Step 1
+AVLTree::TreeNode* AVLTree::rotateLeftRight(AVLTree::TreeNode* node) {
+    node->left = rotateLeft(node->left);
+    node = rotateRight(node);
+
+    // Update heights
+    node->height = 1 + std::max(node->left != nullptr ? node->left->height : 0, node->right != nullptr ? node->right->height : 0);
+
     return node;
 }
-TreeNode* AVLTree::RotateLeft(TreeNode* node) {
-    TreeNode* newRoot = node->right;
-    node->right = newRoot->left;
-    newRoot->left = node;
 
-    UpdateHeightAndBalance(node);
-    UpdateHeightAndBalance(newRoot);
+// Taken from Stepik 5.1 Step 3
+AVLTree::TreeNode* AVLTree::rotateRightLeft(AVLTree::TreeNode* node) {
+    node->right = rotateRight(node->right);
+    node = rotateLeft(node);
 
-    return newRoot;
-}
-TreeNode* AVLTree::RotateRight(TreeNode* node) {
-    TreeNode* newRoot = node->left;
-    node->left = newRoot->right;
-    newRoot->right = node;
+    // Update heights
+    node->height = 1 + std::max(node->left != nullptr ? node->left->height : 0, node->right != nullptr ? node->right->height : 0);
 
-    UpdateHeightAndBalance(node);
-    UpdateHeightAndBalance(newRoot);
-
-    return newRoot;
+    return node;
 }
 
-void AVLTree::UpdateHeightAndBalance(TreeNode* node) {
-    if (node == nullptr) return;
-    node->UpdateHeight();
-    node->UpdateBalance();
+// Gets the balance factor of a node
+int AVLTree::balance(AVLTree::TreeNode* helpRoot) {
+    if (helpRoot == nullptr)
+        return 0;
+    return ((helpRoot->left == nullptr ? 0 : helpRoot->left->height) - (helpRoot->right == nullptr ? 0 : helpRoot->right->height));
+}
+
+// Deallocates the nodes allocated by insert with a postorder traversal
+AVLTree::TreeNode* AVLTree::deleteTree(AVLTree::TreeNode* helpRoot) {
+    if (helpRoot == nullptr)
+        return helpRoot;
+
+    helpRoot->left = deleteTree(helpRoot->left);
+    helpRoot->right = deleteTree(helpRoot->right);
+    delete helpRoot;
+    helpRoot = nullptr;
+    return helpRoot;
+}
+
+int AVLTree::getSize() {
+    return size;
 }

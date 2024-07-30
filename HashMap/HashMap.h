@@ -7,8 +7,8 @@
 
 #include <iostream>
 #include <vector>
-#include "./AVLTree/AVLTree.h"
-#include "./LinkedList/LinkedList.h"
+#include "../AVL Tree/AVLTree.h"
+#include "../Linked List/LinkedList.h"
 #define CAPACITY 14
 
 class HashMap {
@@ -26,7 +26,7 @@ class HashMap {
         ~HashMap();
         template <typename T>
         T operator[](int numIngredients);            // Returns the Linked List head or the AVL root node
-        void insert(const std::string& recipeName, int recipeID, std::vector<string>& ingredients, int numIngredients);
+        void insert(const std::string& recipeName, int recipeID, std::vector<std::string>& ingredients, int numIngredients);
         void changeImplementation();
 
 };
