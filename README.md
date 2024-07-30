@@ -16,6 +16,7 @@ This project is currently under development starting from around July 3th, 2024.
 * July 18th, 2024 - Linked List implementation initial commit.
 * July 20th, 2024 - Performing stress testing of initial AVL and Linked List implementations (Results satisfactory).
 * July 21st, 2024 - User Interface implementation commit.
+* July 29th, 2024 - Merged all branches. Working on developing everything together
 
 ## Dataset
 
