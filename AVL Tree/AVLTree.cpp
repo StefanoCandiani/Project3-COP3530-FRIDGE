@@ -1,3 +1,7 @@
+//
+// Created by Tavienne Millner on 7/20/24.
+//
+
 #include "AVLTree.h"
 
 void AVLTree::insert(const std::string& recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {

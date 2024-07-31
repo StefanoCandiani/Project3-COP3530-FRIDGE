@@ -2,8 +2,8 @@
 // Created by Tavienne Millner on 7/20/24.
 //
 
-#ifndef INPUT_TESTING_AVLTREE_H
-#define INPUT_TESTING_AVLTREE_H
+#ifndef PROJECT3_COP3530_FRIDGE_AVLTREE_H
+#define PROJECT3_COP3530_FRIDGE_AVLTREE_H
 
 #include <string>
 #include <vector>
@@ -58,4 +58,4 @@ private:
 };
 
 
-#endif //INPUT_TESTING_AVLTREE_H
+#endif //PROJECT3_COP3530_FRIDGE_AVLTREE_H

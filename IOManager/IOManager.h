@@ -3,8 +3,9 @@
 #include <vector>
 #include "../Recipe/Recipe.h"
 
-#ifndef UNTITLED3_IOMANAGER_H
-#define UNTITLED3_IOMANAGER_H
+#ifndef PROJECT3_COP3530_FRIDGE_IOMANAGER_H
+#define PROJECT3_COP3530_FRIDGE_IOMANAGER_H
+
 using namespace std;
 class IOManager{
 public:
@@ -94,4 +95,4 @@ public:
         return recipes;
     }
 };
-#endif //UNTITLED3_IOMANAGER_H
+#endif //PROJECT3_COP3530_FRIDGE_IOMANAGER_H
