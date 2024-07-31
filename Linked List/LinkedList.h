@@ -27,6 +27,7 @@ public:
 
     LinkedList() {
         head = nullptr;
+        size = 0;
     }
 
     ~LinkedList() {
@@ -41,8 +42,11 @@ public:
     void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
     LinkedList::LLNode* search(const std::vector<std::string>& userIngredients);
     void traverse();
+    int getSize();
 
 private:
+    int size;
+
     // Head pointer, not accessible to client
     LLNode* head;
 };

@@ -13,6 +13,7 @@ void LinkedList::insert(const std::string &recipeName, int recipeID, const std::
         LinkedList::LLNode* newNode = new LinkedList::LLNode(recipeName, recipeID, ingredients, numIngredients, head);
         head = newNode;
     }
+    size++;
 }
 
 LinkedList::LLNode* LinkedList::search(const std::vector<std::string>& userIngredients) {
@@ -51,4 +52,8 @@ void LinkedList::traverse() {
         std::cout << currNode->recipeName << std::endl;
         currNode = currNode->next;
     }
+}
+
+int LinkedList::getSize() {
+    return size;
 }

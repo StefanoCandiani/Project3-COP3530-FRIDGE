@@ -9,14 +9,15 @@
 #include <vector>
 #include "../AVL Tree/AVLTree.h"
 #include "../Linked List/LinkedList.h"
-#define CAPACITY 14
+#include <chrono>
+#include <tuple>
+#define CAPACITY 15
 
 class HashMap {
-
     private:
-        LinkedList* LLHashMap[CAPACITY];
-        AVLTree* AVLHashMap[CAPACITY];
-        bool implementation;                            // 0 Linked List | 1 AVL Tree
+        LinkedList* LLHashMap[CAPACITY] = {new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList, new LinkedList};
+        AVLTree* AVLHashMap[CAPACITY] = {new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree, new AVLTree};
+        bool implementation;                            // false Linked List | true AVL Tree
 
         int hashFunction(int numIngredients);
 
@@ -24,10 +25,11 @@ class HashMap {
 
         HashMap();
         ~HashMap();
-        template <typename T>
-        T operator[](int numIngredients);            // Returns the Linked List head or the AVL root node
+        std::pair<LinkedList*, AVLTree*> operator[](int numIngredients);            // Returns the Linked List head or the AVL root node
         void insert(const std::string& recipeName, int recipeID, std::vector<std::string>& ingredients, int numIngredients);
         void changeImplementation();
+        std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double>> search(const std::vector<std::string>& userIngredients);
+        bool getImplementation();
 
 };
 

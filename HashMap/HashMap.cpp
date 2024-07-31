@@ -4,53 +4,58 @@
 
 #include "HashMap.h"
 
-/// Default Constructor
 HashMap::HashMap() {
-    implementation = 1;
-    for(int i = 0; i < CAPACITY; i++) {
-        LLHashMap[i] = new LinkedList;
-    }
-    for(int i = 0; i < CAPACITY; i++) {
-        AVLHashMap[i] = new AVLTree;
-    }
+    implementation = true;
 }
 
-/// Destructor
 HashMap::~HashMap() {
-    for(LinkedList* LL : LLHashMap) {
-        delete LL;
-    }
-    for(AVLTree* AVL : AVLHashMap) {
-        delete AVL;
-    }
+    // TODO
 }
 
-/// Hash Map
-int HashMap::hashFunction(int numIngredients) {
-    return numIngredients - 4;
+std::pair<LinkedList*, AVLTree*> HashMap::operator[](int index) {
+    return {LLHashMap[index], AVLHashMap[index]};
 }
 
-/// Insert Function
-void HashMap::insert(const std::string &recipeName, int recipeID, std::vector<std::string> &ingredients,
-                     int numIngredients) {
+void HashMap::insert(const std::string &recipeName, int recipeID, std::vector<std::string> &ingredients, int numIngredients) {
     int hashCode = hashFunction(numIngredients);
-    LLHashMap[hashCode] -> insert(recipeName, recipeID, ingredients, numIngredients);
-    AVLHashMap[hashCode] -> insert(recipeName, recipeID, ingredients, numIngredients);
+    LLHashMap[hashCode]->insert(recipeName, recipeID, ingredients, numIngredients);
+    AVLHashMap[hashCode]->insert(recipeName, recipeID, ingredients, numIngredients);
 }
 
-/// Change implementation
 void HashMap::changeImplementation() {
     implementation = !implementation;
 }
 
-/// Operator [] gives AVL tree object pointer at a given hash index
-template <typename T>
-T HashMap::operator[] (int numIngredients) {
-    int hashCode = hashFunction(numIngredients);
-    // Return proper implementation at a given hash index
-    if(implementation) {                // AVL Tree (Implementation = 1)
-        return AVLHashMap[hashCode];
-    } else {                            // Linked List (Implementation = 0)
-        return LLHashMap[hashCode];
+int HashMap::hashFunction(int numIngredients) {
+    return numIngredients-4;
+}
+
+std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double>> HashMap::search(const std::vector<std::string>& userIngredients) {
+    int hashCode = hashFunction(userIngredients.size());
+
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    std::chrono::duration<double> elaspedTime;
+
+    if (implementation) {
+        std::cout << "\nTREE" << std::endl;
+        start = std::chrono::system_clock::now();
+        AVLTree::TreeNode* found = AVLHashMap[hashCode]->search(userIngredients);
+        end = std::chrono::system_clock::now();
+        elaspedTime = end-start;
+
+        return std::make_tuple(nullptr, found, elaspedTime);
     }
+    else {
+        std::cout << "\nLIST" << std::endl;
+        start = std::chrono::system_clock::now();
+        LinkedList::LLNode* found = LLHashMap[hashCode]->search(userIngredients);
+        end = std::chrono::system_clock::now();
+        elaspedTime = end-start;
+
+        return std::make_tuple(found, nullptr, elaspedTime);
+    }
+}
+
+bool HashMap::getImplementation() {
+    return implementation;
 }

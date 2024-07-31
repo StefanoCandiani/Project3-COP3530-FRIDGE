@@ -4,17 +4,23 @@
 
 #include "AVLTree.h"
 
-void AVLTree::insert(const std::string& recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
+void AVLTree::insert(const std::string &recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
     this->root = helperInsert(this->root, recipeName, recipeID, ingredients, numIngredients);
     size++;
 }
 
-AVLTree::TreeNode* AVLTree::search(std::vector<std::string>& userIngredients) {
+AVLTree::TreeNode* AVLTree::search(const std::vector<std::string>& userIngredients) {
     AVLTree::TreeNode* found = helperSearch(root, userIngredients);
     return found;
 }
 
-AVLTree::TreeNode* AVLTree::helperInsert(AVLTree::TreeNode* helpRoot, const std::string &recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients) {
+void AVLTree::traverse() {
+    helperTraverse(this->root);
+}
+
+/// TODO
+// how to handle duplicates??
+AVLTree::TreeNode *AVLTree::helperInsert(AVLTree::TreeNode *helpRoot, const std::string &recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
     // Standard BST insert logic
     if (helpRoot == nullptr)
         return new AVLTree::TreeNode(recipeName, recipeID, ingredients, numIngredients);
@@ -54,7 +60,7 @@ AVLTree::TreeNode* AVLTree::helperInsert(AVLTree::TreeNode* helpRoot, const std:
     return helpRoot;
 }
 
-AVLTree::TreeNode* AVLTree::helperSearch(AVLTree::TreeNode* helpRoot, std::vector<std::string>& userIngredients) {
+AVLTree::TreeNode* AVLTree::helperSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients) {
     if (helpRoot == nullptr)
         return helpRoot;
     if (helpRoot->ingredients == userIngredients)
@@ -63,6 +69,15 @@ AVLTree::TreeNode* AVLTree::helperSearch(AVLTree::TreeNode* helpRoot, std::vecto
         return helperSearch(helpRoot->left, userIngredients);
     else if (userIngredients > helpRoot->ingredients)
         return helperSearch(helpRoot->right, userIngredients);
+}
+
+void AVLTree::helperTraverse(AVLTree::TreeNode* helpRoot) {
+    if (helpRoot == nullptr)
+        return;
+
+    helperTraverse(helpRoot->left);
+    std::cout << helpRoot->recipeName << std::endl;
+    helperTraverse(helpRoot->right);
 }
 
 // Taken from Stepik 5.1 Step 1
@@ -135,3 +150,5 @@ AVLTree::TreeNode* AVLTree::deleteTree(AVLTree::TreeNode* helpRoot) {
 int AVLTree::getSize() {
     return size;
 }
+
+

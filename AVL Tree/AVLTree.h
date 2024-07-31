@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 class AVLTree {
 public:
@@ -35,7 +36,8 @@ public:
     }
 
     void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
-    AVLTree::TreeNode* search(std::vector<std::string>& userIngredients);
+    AVLTree::TreeNode* search(const std::vector<std::string>& userIngredients);
+    void traverse();
     int getSize();
 
 private:
@@ -43,7 +45,8 @@ private:
     int size;
 
     AVLTree::TreeNode* helperInsert(AVLTree::TreeNode* helpRoot, const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
-    AVLTree::TreeNode* helperSearch(AVLTree::TreeNode* helpRoot, std::vector<std::string>& userIngredients);
+    AVLTree::TreeNode* helperSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients);
+    void helperTraverse(AVLTree::TreeNode* helpRoot);
 
     // Utilities needed by insert
     AVLTree::TreeNode* rotateLeft(AVLTree::TreeNode* node);
@@ -56,6 +59,5 @@ private:
     AVLTree::TreeNode* deleteTree(AVLTree::TreeNode* helpRoot);
 
 };
-
 
 #endif //PROJECT3_COP3530_FRIDGE_AVLTREE_H
