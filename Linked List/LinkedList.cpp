@@ -2,6 +2,7 @@
 // Created by Tavienne Millner on 7/17/24.
 //
 
+#include <queue>
 #include "LinkedList.h"
 
 void LinkedList::insert(const std::string &recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
@@ -15,7 +16,30 @@ void LinkedList::insert(const std::string &recipeName, int recipeID, const std::
     }
     size++;
 }
+std::priority_queue<std::pair<float, LinkedList::LLNode*>> LinkedList::bestSearch(const std::vector<std::string>& userIngredients) {
+    LinkedList::LLNode* currNode = head;
+    std::set<std::string> recipeIngredients;
+    std::priority_queue<std::pair<float, LinkedList::LLNode*>> pq;
 
+    while (currNode != nullptr) {
+
+        float percentageMatch = 0.0f;
+        float increment = 1.0f/ (float) currNode->ingredients.size();
+
+        for (int i = 0; i < currNode->ingredients.size(); i++)
+            recipeIngredients.insert(currNode->ingredients[i]);
+
+        for (int i = 0; i < recipeIngredients.size(); i++)
+            if (recipeIngredients.find(userIngredients[i]) != recipeIngredients.end())
+                percentageMatch += increment;
+
+        pq.push(std::make_pair(percentageMatch, currNode));
+        currNode = currNode->next;
+        recipeIngredients.clear();
+    }
+
+    return pq;
+}
 LinkedList::LLNode* LinkedList::search(const std::vector<std::string>& userIngredients) {
     LinkedList::LLNode* currNode = head;
     std::set<std::string> recipeIngredients;

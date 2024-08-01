@@ -9,6 +9,7 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include <queue>
 
 class LinkedList {
 public:
@@ -40,6 +41,7 @@ public:
     }
 
     void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
+    std::priority_queue<std::pair<float, LinkedList::LLNode*>> bestSearch(const std::vector<std::string>& userIngredients);
     LinkedList::LLNode* search(const std::vector<std::string>& userIngredients);
     void traverse();
     int getSize();

@@ -3,6 +3,7 @@
 //
 
 #include "AVLTree.h"
+#include "../Linked List/LinkedList.h"
 
 void AVLTree::insert(const std::string &recipeName, int recipeID, const std::vector<std::string> &ingredients, int numIngredients) {
     this->root = helperInsert(this->root, recipeName, recipeID, ingredients, numIngredients);
@@ -14,9 +15,17 @@ AVLTree::TreeNode* AVLTree::search(const std::vector<std::string>& userIngredien
     return found;
 }
 
+std::priority_queue<std::pair<float, AVLTree::TreeNode*>> AVLTree::bestSearch(const std::vector<std::string>& userIngredients) {
+    std::priority_queue<std::pair<float, AVLTree::TreeNode*>> pq;
+    helperBestSearch(root, userIngredients, pq);
+    return pq;
+}
+
+
 void AVLTree::traverse() {
     helperTraverse(this->root);
 }
+
 
 /// TODO
 // how to handle duplicates??
@@ -59,6 +68,27 @@ AVLTree::TreeNode *AVLTree::helperInsert(AVLTree::TreeNode *helpRoot, const std:
 
     return helpRoot;
 }
+
+
+void AVLTree::helperBestSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients, std::priority_queue<std::pair<float, AVLTree::TreeNode*>>& pq) {
+    if (helpRoot == nullptr)
+        return;
+
+    float percentageMatch = 0.0f;
+    float increment = 1.0f / (float) userIngredients.size();
+
+    std::set<std::string> recipeIngredients(helpRoot->ingredients.begin(), helpRoot->ingredients.end());
+
+    for (const auto& ingredient : userIngredients)
+        if (recipeIngredients.find(ingredient) != recipeIngredients.end())
+            percentageMatch += increment;
+
+    pq.push(std::make_pair(percentageMatch, helpRoot));
+
+    helperBestSearch(helpRoot->left, userIngredients, pq);
+    helperBestSearch(helpRoot->right, userIngredients, pq);
+}
+
 
 AVLTree::TreeNode* AVLTree::helperSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients) {
     if (helpRoot == nullptr)

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <queue>
 
 class AVLTree {
 public:
@@ -37,6 +38,7 @@ public:
 
     void insert(const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
     AVLTree::TreeNode* search(const std::vector<std::string>& userIngredients);
+    std::priority_queue<std::pair<float, AVLTree::TreeNode*>> bestSearch(const std::vector<std::string>& userIngredients);
     void traverse();
     int getSize();
 
@@ -46,6 +48,8 @@ private:
 
     AVLTree::TreeNode* helperInsert(AVLTree::TreeNode* helpRoot, const std::string& recipeName, int recipeID, const std::vector<std::string>& ingredients, int numIngredients);
     AVLTree::TreeNode* helperSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients);
+    void helperBestSearch(AVLTree::TreeNode* helpRoot, const std::vector<std::string>& userIngredients,
+                                                                                        std::priority_queue<std::pair<float, AVLTree::TreeNode*>>& pq);
     void helperTraverse(AVLTree::TreeNode* helpRoot);
 
     // Utilities needed by insert
