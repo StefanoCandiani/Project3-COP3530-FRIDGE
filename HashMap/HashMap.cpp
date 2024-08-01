@@ -5,7 +5,7 @@
 #include "HashMap.h"
 
 HashMap::HashMap() {
-    implementation = true;
+    implementation = true;  //AVL TRUE - LL FALSE
 }
 
 HashMap::~HashMap() {
@@ -58,4 +58,11 @@ std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double
 
 bool HashMap::getImplementation() {
     return implementation;
+}
+
+std::pair<std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, std::chrono::duration<double>>, std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>>> HashMap::bestMatchSearch(const std::vector<std::string>& userIngredients) {
+    int hashCode = hashFunction(userIngredients.size());
+    std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, std::chrono::duration<double>> AVLFinds = AVLHashMap[hashCode]->bestSearch(userIngredients);
+    std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>> LLFinds = LLHashMap[hashCode]->bestSearch(userIngredients);
+    return std::make_pair(AVLFinds, LLFinds);
 }

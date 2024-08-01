@@ -16,10 +16,13 @@ void LinkedList::insert(const std::string &recipeName, int recipeID, const std::
     }
     size++;
 }
-std::priority_queue<std::pair<float, LinkedList::LLNode*>> LinkedList::bestSearch(const std::vector<std::string>& userIngredients) {
+std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>> LinkedList::bestSearch(const std::vector<std::string>& userIngredients) {
     LinkedList::LLNode* currNode = head;
     std::set<std::string> recipeIngredients;
     std::priority_queue<std::pair<float, LinkedList::LLNode*>> pq;
+
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
 
     while (currNode != nullptr) {
 
@@ -33,12 +36,16 @@ std::priority_queue<std::pair<float, LinkedList::LLNode*>> LinkedList::bestSearc
             if (recipeIngredients.find(userIngredients[i]) != recipeIngredients.end())
                 percentageMatch += increment;
 
+        if(percentageMatch >= .5f && percentageMatch < 1.0f)
         pq.push(std::make_pair(percentageMatch, currNode));
         currNode = currNode->next;
         recipeIngredients.clear();
     }
 
-    return pq;
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsedTime = end-start;
+
+    return std::make_pair( pq, elapsedTime);
 }
 LinkedList::LLNode* LinkedList::search(const std::vector<std::string>& userIngredients) {
     LinkedList::LLNode* currNode = head;

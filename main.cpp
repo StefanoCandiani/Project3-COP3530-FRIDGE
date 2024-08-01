@@ -29,12 +29,28 @@ void printMainMenu(bool implementation) {
     cout << "1. Suggest a recipe" << endl;
     cout << "2. Change ingredients on hand" << endl;
     if (implementation)
-        cout << "3. Toggle DSA [AVL Tree]" << endl;
+        cout << "3. Toggle DSA [Currently AVL Tree]" << endl;
     else
-        cout << "3. Toggle DSA [Linked List]" << endl;
+        cout << "3. Toggle DSA [Currently Linked List]" << endl;
     cout << "4. Exit" << endl;
     cout << endl;
     cout << "Please make a selection (1-4): ";
+}
+
+/// Print Recipe Title Card
+void printRecipeCard(AVLTree::TreeNode* tNode, LinkedList::LLNode* llNode, float percentage) {
+    string recipeName;
+    vector<string> ingredients;
+    int recipeId,topBarSize,bottomBarSize;
+    if(tNode == nullptr) {
+        cout << "+";
+        cout << right << left << setw(topBarSize);
+        cout << "-";
+        cout << "+" << endl;
+        cout << "| " << recipeName << " | " << endl;
+    } else if(llNode == nullptr) {
+
+    }
 }
 
 /// Parses the ingredient string into an array for later use
@@ -70,7 +86,6 @@ int main() {
     // Initializes AVLTree version and LinkedList
     HashMap hashMap;
 
-
     // Fill HashMap
     for (int i = 0; i < recipes.size(); i++) {
         hashMap.insert(recipes[i]->name, recipes[i]->recipe_id, recipes[i]->ingredients, recipes[i]->ingredient_num);
@@ -78,7 +93,7 @@ int main() {
 
     /// UI Variables
     vector<string> parsedIngredients;
-    string userInput, unparsedIngredients;                           // 0 = linked list | 1 = AVL tree
+    string userInput, unparsedIngredients;                           // false = linked list | true = AVL tree
 
     /// User interface printing
     // Introduction and ingredient prompting
@@ -103,24 +118,64 @@ int main() {
 
         // Conditionals
         if(userInput == "1") {                          // If usrInput = 1 -> Perform search operation on currently active DSA
+            bool closeSearch = false;
 
-            search:
             auto find = hashMap.search(parsedIngredients);
 
             if (get<0>(find) == nullptr && get<1>(find) == nullptr) {
-                cout << "no recipe found with your ingredients" << endl;
+                search:
+                cout << "Executing closest match search because no exact match found" << endl;
+                auto closestMatches = hashMap.bestMatchSearch(parsedIngredients);
+                if (hashMap.getImplementation()) {  //Avl Tree Best Search
+                    cout << "Closest matches search executed in " << closestMatches.first.second.count() << " seconds." << endl;
+
+                    AVLClosest:
+                    AVLTree::TreeNode* AVLmatch = closestMatches.first.first.top().second;
+                    float percentage = closestMatches.first.first.top().first;
+                    closestMatches.first.first.pop();
+
+                    // call stefano's print closest match function
+                    cout << AVLmatch -> recipeName << endl;
+                    cout << percentage << endl;
+
+                    cout << "Would you like another recipe suggested? (y/n)" << endl;
+                    getline(cin, userInput);
+                    if(userInput == "n") { cout << endl; continue; }
+                    else if(userInput == "y" && !closestMatches.first.first.empty()) { goto AVLClosest; }
+                }
+                else {  //Linked List Best Search
+                    cout << "Closest matches search executed in " << closestMatches.first.second.count() << " seconds." << endl;
+
+                    LLClosest:
+                    LinkedList::LLNode* LLmatch = closestMatches.second.first.top().second;
+                    float percentage = closestMatches.second.first.top().first;
+                    closestMatches.second.first.pop();
+
+                    // call stefano's print closest match function
+                    //printRecipeCard(nullptr, LLmatch, percentage); // example called
+                    cout << LLmatch -> recipeName << endl;
+                    cout << percentage << endl;
+
+                    cout << "Would you like another recipe suggested? (y/n)" << endl;
+                    getline(cin, userInput);
+                    if(userInput == "n") { cout << endl; continue; }
+                    else if(userInput == "y" && !closestMatches.second.first.empty()) { goto LLClosest; }
+                }
+                closeSearch = true;
             }
             else {
                 cout << fixed;
                 cout << "Here's a recipe you may like:" << endl;
                 if (get<0>(find) != nullptr) {
+                    // stefano's print
                     cout << get<0>(find)->recipeName << endl;
-                    cout << "search executed in " << get<2>(find).count() << " seconds." << endl;
+                    cout << "Search executed in " << get<2>(find).count() << " seconds." << endl;
                     cout << endl;
                 }
                 else {
+                    // stefano's print
                     cout << get<1>(find)->recipeName << endl;
-                    cout << "search executed in " << get<2>(find).count() << " seconds." << endl;
+                    cout << "Search executed in " << get<2>(find).count() << " seconds." << endl;
                     cout << endl;
                 }
             }
@@ -134,13 +189,17 @@ int main() {
 //            cout << "|                                                          |                                                 |" << endl;
 //            cout << "+----------------------------------------------------------+-------------------------------------------------+" << endl;
 
+            if(!closeSearch){
 
-            // if another recipe is suggested, use the closest match search
-            cout << "Would you like another recipe suggested? (y/n)" << endl;
-            getline(cin, userInput);
+                cout << "Would you like another recipe suggested? (y/n)" << endl;
+                getline(cin, userInput);
+                if(userInput == "n") { cout << endl; continue; }
+                else if(userInput == "y" && !closeSearch) { goto search; }
 
-            if(userInput == "n") { cout << endl; continue; }
-            else if(userInput == "y") { goto search; }
+            } else {
+                cout << "No more closest matches" << endl;
+                cout << endl;
+            }
 
 
         } else if(userInput == "2") {                   // If usrInput = 2 -> Perform ingredient change operation
@@ -180,49 +239,3 @@ int main() {
     return 0;
 }
 
-
-/*int main() {
-    HashMap hashMap;
-
-    vector<Recipe*> recipes = IOManager::ReadIngredients("immaculate_ingredients.csv");
-    cout << recipes.size() << endl;
-
-    for (int i = 0; i < recipes.size(); i++) {
-        hashMap.insert(recipes[i]->name, recipes[i]->recipe_id, recipes[i]->ingredients, recipes[i]->ingredient_num);
-    }
-
-//    std::cout << std::fixed;
-//
-//    std::chrono::time_point<std::chrono::system_clock> start, end;
-//
-//    start = std::chrono::system_clock::now();
-//
-//    LinkedList::LLNode* LLfound = hashMap[0].first->search({"frozen peaches", "honey", "orange juice", "vanilla yogurt"});
-//    std::cout << LLfound->recipeName << std::endl;
-//
-//    end = std::chrono::system_clock::now();
-//    std::chrono::duration<double> elaspedTime = end-start;
-//
-//    std::cout << elaspedTime.count() << " seconds" << std::endl;
-//
-//
-//    start = std::chrono::system_clock::now();
-//    AVLTree::TreeNode* TreeNodeFound = hashMap[0].second->search({"frozen peaches", "honey", "orange juice", "vanilla yogurt"});
-//    std::cout << TreeNodeFound->recipeName << std::endl;
-//
-//    end = std::chrono::system_clock::now();
-//    elaspedTime = end-start;
-//
-//    std::cout << elaspedTime.count() << " seconds" << std::endl;
-
-    hashMap.changeImplementation();
-
-    auto find = hashMap.search({"frozen peaches", "honey", "orange juice", "vanilla yogurt"});
-
-    if (find.first!=nullptr)
-        std::cout << find.first->recipeName << std::endl;
-    else
-        std::cout << find.second->recipeName << std::endl;
-
-    return 0;
-}*/

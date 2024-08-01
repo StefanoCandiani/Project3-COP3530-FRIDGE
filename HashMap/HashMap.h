@@ -11,6 +11,7 @@
 #include "../Linked List/LinkedList.h"
 #include <chrono>
 #include <tuple>
+#include <queue>
 #define CAPACITY 15
 
 class HashMap {
@@ -29,6 +30,7 @@ class HashMap {
         void insert(const std::string& recipeName, int recipeID, std::vector<std::string>& ingredients, int numIngredients);
         void changeImplementation();
         std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double>> search(const std::vector<std::string>& userIngredients);
+        std::pair<std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, std::chrono::duration<double>>, std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>>> bestMatchSearch(const std::vector<std::string>& userIngredients);
         bool getImplementation();
 
 };
