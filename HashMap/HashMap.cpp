@@ -8,8 +8,14 @@ HashMap::HashMap() {
     implementation = true;  //AVL TRUE - LL FALSE
 }
 
+/// Destructor
 HashMap::~HashMap() {
-    // TODO
+    for(LinkedList* LL : LLHashMap) {
+        delete LL;
+    }
+    for(AVLTree* AVL : AVLHashMap) {
+        delete AVL;
+    }
 }
 
 std::pair<LinkedList*, AVLTree*> HashMap::operator[](int index) {
@@ -37,7 +43,6 @@ std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double
     std::chrono::duration<double> elaspedTime;
 
     if (implementation) {
-        std::cout << "\nTREE" << std::endl;
         start = std::chrono::system_clock::now();
         AVLTree::TreeNode* found = AVLHashMap[hashCode]->search(userIngredients);
         end = std::chrono::system_clock::now();
@@ -46,7 +51,6 @@ std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double
         return std::make_tuple(nullptr, found, elaspedTime);
     }
     else {
-        std::cout << "\nLIST" << std::endl;
         start = std::chrono::system_clock::now();
         LinkedList::LLNode* found = LLHashMap[hashCode]->search(userIngredients);
         end = std::chrono::system_clock::now();

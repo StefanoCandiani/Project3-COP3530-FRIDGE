@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono> // used for comparing time for search
+#include <sstream>
 #include "HashMap/HashMap.h"
 #include "IOManager/IOManager.h"
 #include "Recipe/Recipe.h"
@@ -39,17 +40,81 @@ void printMainMenu(bool implementation) {
 
 /// Print Recipe Title Card
 void printRecipeCard(AVLTree::TreeNode* tNode, LinkedList::LLNode* llNode, float percentage) {
-    string recipeName;
+    // Card elements initialization
+    string recipeName, linkName;
+    string recipeIngredients = "Ingredients: ";
+    string link = " https://www.food.com/recipe/";
+    stringstream perSim;
+    perSim << "Percent similarity: " << fixed << setprecision(0) << percentage * 100 << "% ";
     vector<string> ingredients;
-    int recipeId,topBarSize,bottomBarSize;
-    if(tNode == nullptr) {
-        cout << "+";
-        cout << right << left << setw(topBarSize);
-        cout << "-";
-        cout << "+" << endl;
-        cout << "| " << recipeName << " | " << endl;
-    } else if(llNode == nullptr) {
+    int recipeId;
+    double topBarSize,bottomBarSize;
 
+//    Vanilla Yogurt, Frozen Peaches, Honey, Orange Juice
+
+    // Check which node to take in data from (linked list node or tree node)
+    if(tNode == nullptr && llNode != nullptr) {
+        recipeName = llNode -> recipeName;
+        ingredients = llNode -> ingredients;
+        recipeId = llNode -> recipeID;
+    } else if(llNode == nullptr && tNode != nullptr) {
+        recipeName = tNode -> recipeName;
+        ingredients = tNode -> ingredients;
+        recipeId = tNode -> recipeID;
+    }
+
+    // Ensure nodes are truly existant
+    if(tNode != nullptr || llNode != nullptr) {
+
+        // Write down ingredients into a single string for printing
+        for (int i = 0; i < ingredients.size(); i++) {
+            recipeIngredients += ingredients[i];
+            if (i < ingredients.size() - 1) { recipeIngredients += ", "; }
+            else { recipeIngredients += " "; }
+        }
+
+        // Link identification
+        for (char c: recipeName) {
+            if (c != ' ') { linkName += c; }
+            else { linkName += '-'; }
+        }
+        link += linkName + "-" + to_string(recipeId);
+
+        // Dynamic size allocation based on recipe size
+        double topLeftBarSize = max(recipeName.size(), link.size()) * 2.2;
+        double topRightBarSize = recipeIngredients.size() * 2.2;
+
+        // Final product printing
+        cout << "+";
+        cout << setw((topLeftBarSize / 2) + 1) << setfill('-');
+        cout << "+";
+        cout << setw((topRightBarSize / 2) + 1) << setfill('-');
+        cout << "+" << endl;
+
+        cout << "| ";
+        cout << left << setw((topLeftBarSize / 2) - 1) << setfill(' ') << recipeName;
+        cout << "|";
+        cout << right << setw(topRightBarSize / 2) << setfill(' ');
+        cout << recipeIngredients;
+        cout << "|" << endl;
+
+        cout << "|";
+        cout << left << setw(topLeftBarSize / 2) << setfill(' ') << " ";
+        cout << "|";
+        cout << right << setw(topRightBarSize / 2) << setfill(' ') << " ";
+        cout << "|" << endl;
+
+        cout << "|";
+        cout << left << setw(topLeftBarSize / 2) << setfill(' ') << link;
+        cout << "|";
+        cout << right << setw(topRightBarSize / 2) << setfill(' ') << perSim.str();
+        cout << "|" << endl;
+
+        cout << "+";
+        cout << right << setw((topLeftBarSize / 2) + 1) << setfill('-');
+        cout << "+";
+        cout << setw((topRightBarSize / 2) + 1) << setfill('-');
+        cout << "+" << endl;
     }
 }
 
@@ -91,11 +156,11 @@ int main() {
         hashMap.insert(recipes[i]->name, recipes[i]->recipe_id, recipes[i]->ingredients, recipes[i]->ingredient_num);
     }
 
-    /// UI Variables
+    // UI Variables
     vector<string> parsedIngredients;
     string userInput, unparsedIngredients;                           // false = linked list | true = AVL tree
 
-    /// User interface printing
+    // User interface printing
     // Introduction and ingredient prompting
     printWelcomeMessage();
     getline(cin, unparsedIngredients);
@@ -115,6 +180,7 @@ int main() {
 
         printMainMenu(hashMap.getImplementation());
         getline(cin, userInput);
+        cout << endl;
 
         // Conditionals
         if(userInput == "1") {                          // If usrInput = 1 -> Perform search operation on currently active DSA
@@ -124,6 +190,7 @@ int main() {
 
             if (get<0>(find) == nullptr && get<1>(find) == nullptr) {
                 search:
+                cout << endl;
                 cout << "Executing closest match search because no exact match found" << endl;
                 auto closestMatches = hashMap.bestMatchSearch(parsedIngredients);
                 if (hashMap.getImplementation()) {  //Avl Tree Best Search
@@ -135,11 +202,13 @@ int main() {
                     closestMatches.first.first.pop();
 
                     // call stefano's print closest match function
-                    cout << AVLmatch -> recipeName << endl;
-                    cout << percentage << endl;
+                    printRecipeCard(AVLmatch, nullptr, percentage);
+                    cout << endl;
 
                     cout << "Would you like another recipe suggested? (y/n)" << endl;
                     getline(cin, userInput);
+                    cout << endl;
+
                     if(userInput == "n") { cout << endl; continue; }
                     else if(userInput == "y" && !closestMatches.first.first.empty()) { goto AVLClosest; }
                 }
@@ -151,13 +220,13 @@ int main() {
                     float percentage = closestMatches.second.first.top().first;
                     closestMatches.second.first.pop();
 
-                    // call stefano's print closest match function
-                    //printRecipeCard(nullptr, LLmatch, percentage); // example called
-                    cout << LLmatch -> recipeName << endl;
-                    cout << percentage << endl;
+                    printRecipeCard(nullptr, LLmatch, percentage);
+                    cout << endl;
 
                     cout << "Would you like another recipe suggested? (y/n)" << endl;
                     getline(cin, userInput);
+                    cout << endl;
+
                     if(userInput == "n") { cout << endl; continue; }
                     else if(userInput == "y" && !closestMatches.second.first.empty()) { goto LLClosest; }
                 }
@@ -167,27 +236,16 @@ int main() {
                 cout << fixed;
                 cout << "Here's a recipe you may like:" << endl;
                 if (get<0>(find) != nullptr) {
-                    // stefano's print
-                    cout << get<0>(find)->recipeName << endl;
+                    printRecipeCard(nullptr, get<0>(find), 1.0f);
                     cout << "Search executed in " << get<2>(find).count() << " seconds." << endl;
                     cout << endl;
                 }
                 else {
-                    // stefano's print
-                    cout << get<1>(find)->recipeName << endl;
+                    printRecipeCard(get<1>(find), nullptr, 1.0f);
                     cout << "Search executed in " << get<2>(find).count() << " seconds." << endl;
                     cout << endl;
                 }
             }
-
-            // Temporary placeholder for recipe card [FIXME]
-//            cout << "Here's a recipe you might like:" << endl;
-//            cout << "+----------------------------------------------------------+-------------------------------------------------+" << endl;
-//            cout << "|  Company Green Beans                                     |  Ingredients:                                   |" << endl;
-//            cout << "|                                                          |  [Bacon, Onion, Green Beans, Whole Tomatoes]    |" << endl;
-//            cout << "|  https://www.food.com/recipe/company-green-beans-204270  |  You are missing 1 ingredient                   |" << endl;
-//            cout << "|                                                          |                                                 |" << endl;
-//            cout << "+----------------------------------------------------------+-------------------------------------------------+" << endl;
 
             if(!closeSearch){
 
@@ -215,6 +273,7 @@ int main() {
             cout << endl;
             cout << "Do you confirm these are the ingredients you want? (y/n)" << endl;
             getline(cin, userInput);
+            cout << endl;
             if(userInput == "y") { continue; }
             else if(userInput == "n") { goto changeIngredients; }
 
