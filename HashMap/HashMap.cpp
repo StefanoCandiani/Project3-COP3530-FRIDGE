@@ -36,6 +36,10 @@ int HashMap::hashFunction(int numIngredients) {
     return numIngredients-4;
 }
 
+bool HashMap::getImplementation() {
+    return implementation;
+}
+
 std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double>> HashMap::search(const std::vector<std::string>& userIngredients) {
     int hashCode = hashFunction(userIngredients.size());
 
@@ -58,10 +62,6 @@ std::tuple<LinkedList::LLNode*, AVLTree::TreeNode*, std::chrono::duration<double
 
         return std::make_tuple(found, nullptr, elaspedTime);
     }
-}
-
-bool HashMap::getImplementation() {
-    return implementation;
 }
 
 std::pair<std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, std::chrono::duration<double>>, std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>>> HashMap::bestMatchSearch(const std::vector<std::string>& userIngredients) {

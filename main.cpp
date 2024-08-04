@@ -49,8 +49,6 @@ void printRecipeCard(AVLTree::TreeNode* tNode, LinkedList::LLNode* llNode, float
     int recipeId;
     double topBarSize,bottomBarSize;
 
-//    Vanilla Yogurt, Frozen Peaches, Honey, Orange Juice
-
     // Check which node to take in data from (linked list node or tree node)
     if(tNode == nullptr && llNode != nullptr) {
         recipeName = llNode -> recipeName;
