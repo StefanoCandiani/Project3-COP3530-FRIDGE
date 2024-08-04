@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <vector>
 #include <algorithm>
-#include <chrono> // used for comparing time for search
 #include <sstream>
 #include "HashMap/HashMap.h"
 #include "IOManager/IOManager.h"
@@ -63,7 +62,7 @@ void printRecipeCard(AVLTree::TreeNode* tNode, LinkedList::LLNode* llNode, float
         recipeId = tNode -> recipeID;
     }
 
-    // Ensure nodes are truly existant
+    // Ensure nodes are truly existent
     if(tNode != nullptr || llNode != nullptr) {
 
         // Write down ingredients into a single string for printing
@@ -197,38 +196,42 @@ int main() {
                     cout << "Closest matches search executed in " << closestMatches.first.second.count() << " seconds." << endl;
 
                     AVLClosest:
-                    AVLTree::TreeNode* AVLmatch = closestMatches.first.first.top().second;
-                    float percentage = closestMatches.first.first.top().first;
-                    closestMatches.first.first.pop();
+                    if (!closestMatches.first.first.empty()) {
+                        AVLTree::TreeNode* AVLmatch = closestMatches.first.first.top().second;
+                        float percentage = closestMatches.first.first.top().first;
+                        closestMatches.first.first.pop();
 
-                    // call stefano's print closest match function
-                    printRecipeCard(AVLmatch, nullptr, percentage);
-                    cout << endl;
+                        // call stefano's print closest match function
+                        printRecipeCard(AVLmatch, nullptr, percentage);
+                        cout << endl;
 
-                    cout << "Would you like another recipe suggested? (y/n)" << endl;
-                    getline(cin, userInput);
-                    cout << endl;
+                        cout << "Would you like another recipe suggested? (y/n)" << endl;
+                        getline(cin, userInput);
+                        cout << endl;
 
-                    if(userInput == "n") { cout << endl; continue; }
-                    else if(userInput == "y" && !closestMatches.first.first.empty()) { goto AVLClosest; }
+                        if(userInput == "n") { cout << endl; continue; }
+                        else if(userInput == "y" && !closestMatches.first.first.empty()) { goto AVLClosest; }
+                    }
                 }
                 else {  //Linked List Best Search
                     cout << "Closest matches search executed in " << closestMatches.first.second.count() << " seconds." << endl;
 
                     LLClosest:
-                    LinkedList::LLNode* LLmatch = closestMatches.second.first.top().second;
-                    float percentage = closestMatches.second.first.top().first;
-                    closestMatches.second.first.pop();
+                    if (!closestMatches.second.first.empty()) {
+                        LinkedList::LLNode *LLmatch = closestMatches.second.first.top().second;
+                        float percentage = closestMatches.second.first.top().first;
+                        closestMatches.second.first.pop();
 
-                    printRecipeCard(nullptr, LLmatch, percentage);
-                    cout << endl;
+                        printRecipeCard(nullptr, LLmatch, percentage);
+                        cout << endl;
 
-                    cout << "Would you like another recipe suggested? (y/n)" << endl;
-                    getline(cin, userInput);
-                    cout << endl;
+                        cout << "Would you like another recipe suggested? (y/n)" << endl;
+                        getline(cin, userInput);
+                        cout << endl;
 
-                    if(userInput == "n") { cout << endl; continue; }
-                    else if(userInput == "y" && !closestMatches.second.first.empty()) { goto LLClosest; }
+                        if(userInput == "n") { cout << endl; continue; }
+                        else if (userInput == "y" && !closestMatches.second.first.empty()) { goto LLClosest; }
+                    }
                 }
                 closeSearch = true;
             }
