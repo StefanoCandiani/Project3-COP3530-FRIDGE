@@ -8,16 +8,6 @@ HashMap::HashMap() {
     implementation = true;  //AVL TRUE - LL FALSE
 }
 
-/// Destructor
-HashMap::~HashMap() {
-    for(LinkedList* LL : LLHashMap) {
-        delete LL;
-    }
-    for(AVLTree* AVL : AVLHashMap) {
-        delete AVL;
-    }
-}
-
 std::pair<LinkedList*, AVLTree*> HashMap::operator[](int index) {
     return {LLHashMap[index], AVLHashMap[index]};
 }
@@ -69,4 +59,14 @@ std::pair<std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, s
     std::pair<std::priority_queue<std::pair<float, AVLTree::TreeNode*>>, std::chrono::duration<double>> AVLFinds = AVLHashMap[hashCode]->bestSearch(userIngredients);
     std::pair<std::priority_queue<std::pair<float, LinkedList::LLNode*>>, std::chrono::duration<double>> LLFinds = LLHashMap[hashCode]->bestSearch(userIngredients);
     return std::make_pair(AVLFinds, LLFinds);
+}
+
+/// Destructor
+HashMap::~HashMap() {
+    for(LinkedList* LL : LLHashMap) {
+        delete LL;
+    }
+    for(AVLTree* AVL : AVLHashMap) {
+        delete AVL;
+    }
 }
