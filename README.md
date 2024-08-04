@@ -18,6 +18,7 @@ This project is currently under development starting from around July 3th, 2024.
 * July 21st, 2024 - User Interface implementation commit.
 * July 28th, 2024 - Hash Map implementation commit.
 * July 29th, 2024 - Merged all branches. Working on reorganizing components coherently.
+* August 3rd, 2024 - All project components are complete. Finished stylizing main.cpp menu prompting. 
 
 ## Dataset
 
